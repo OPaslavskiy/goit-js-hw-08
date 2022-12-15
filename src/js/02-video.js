@@ -8,11 +8,11 @@ const player = new Player(iframe);
 player.on('timeupdate', currentTime);
 
 function currentTime(evt) {
-  throttle(localStorage.setItem(TIME_KEY, evt.seconds), 1000);
+  throttle(JSON.stringify(localStorage.setItem(TIME_KEY, evt.seconds)), 1000);
 }
 
 try {
-  player.setCurrentTime(localStorage.getItem(TIME_KEY));
+  player.setCurrentTime(JSON.parse(localStorage.getItem(TIME_KEY)));
 } catch (error) {
   player.setCurrentTime(0);
 }
