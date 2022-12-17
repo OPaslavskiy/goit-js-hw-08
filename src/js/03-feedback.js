@@ -1,39 +1,47 @@
 import throttle from 'lodash.throttle';
-const submitForm = document.querySelector('.feedback-form');
-const textArea = document.querySelector('textarea');
 
-const MESSAGE_KEY = 'userMessage';
+const feedback = document.querySelector('.feedback-form');
+const FORM_KEY = 'feedback-form-state';
+openPage();
 
-submitForm.addEventListener('submit', onFormSubmit);
-textArea.addEventListener('input', throttle(enteringMessage, 500));
+feedback.addEventListener('submit', sendingFeedback);
+feedback.addEventListener('input', throttle(savedMessage, 500));
 
-saveTextarea();
+let formData = {};
 
-function enteringMessage(event) {
-  const message = event.target.value;
-  localStorage.setItem(MESSAGE_KEY, message);
+function errorMessage() {
+  alert('Dude, fill in all the fields');
 }
 
-function onFormSubmit(event) {
+function sendingFeedback(event) {
   event.preventDefault();
+  const email = event.currentTarget.elements.email.value;
+  const message = event.currentTarget.elements.message.value;
 
-  const formElement = event.currentTarget.elements;
-
-  if (!formElement.email.value || !formElement.message.value) {
-    alert('Dude, fill in all the fields');
-  }
-  const formData = new FormData(event.currentTarget);
-
-  console.log(formData);
-  if (formElement.email.value && formElement.message.value) {
-    submitForm.reset();
-    localStorage.removeItem(MESSAGE_KEY);
+  if (!email || !message) {
+    errorMessage();
+  } else {
+    formData = { email, message };
+    console.log(formData);
+    feedback.reset();
+    localStorage.removeItem(FORM_KEY);
   }
 }
 
-function saveTextarea() {
-  const savedMessage = localStorage.getItem(MESSAGE_KEY);
-  if (savedMessage) {
-    textArea.value = savedMessage;
+function savedMessage() {
+  const currentEmail = feedback.elements.email.value;
+  const currentMessage = feedback.elements.message.value;
+  formData.email = currentEmail;
+  formData.message = currentMessage;
+
+  localStorage.setItem(FORM_KEY, JSON.stringify(formData));
+}
+
+function openPage() {
+  currentValue = JSON.parse(localStorage.getItem(FORM_KEY));
+  if (currentValue) {
+    console.log(currentValue);
+    feedback.elements.email.value = currentValue.email;
+    feedback.elements.message.value = currentValue.message;
   }
 }
