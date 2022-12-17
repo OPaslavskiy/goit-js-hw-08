@@ -38,7 +38,7 @@ function savedMessage() {
 }
 
 function openPage() {
-  currentValue = JSON.parse(localStorage.getItem(FORM_KEY));
+  const currentValue = JSON.parse(localStorage.getItem(FORM_KEY));
   if (currentValue) {
     console.log(currentValue);
     feedback.elements.email.value = currentValue.email;
